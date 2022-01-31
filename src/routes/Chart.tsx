@@ -18,50 +18,75 @@ interface ChartProps {
 }
 function Chart({ coinId }: ChartProps) {
   const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
-    fetchCoinHistory(coinId)
+    fetchCoinHistory(coinId),
+    {
+      refetchInterval: 10000,
+    }
   );
-  console.log(data?.map(price=> price.close) );
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ApexChart
-          type="line"
+          type="candlestick"
           series={[
-            { name: "sales", data: data?.map(price=> price.close) },
+            {
+              data: 
+                data?.map((price) => {
+                  return [
+                    Date.parse(price.time_close),
+                    price.open,
+                    price.high,
+                    price.low,
+                    price.close,
+                  ];
+                }),
+            },
           ]}
           options={{
             theme: {
-              mode:"dark"
+              mode: "dark",
             },
             chart: {
-              height: 500,
+              type: "candlestick",
+              height: 350,
               width: 500,
               toolbar: {
                 show:false,
               },
-              background:"transparent",
+              background: "transparent",
             },
-            grid:{show:false},
             stroke: {
               curve: "smooth",
-              width: 4,
+              width: 2,
             },
             yaxis: {
               show: false,
             },
             xaxis: {
-              axisTicks:{show:false},
-              labels:{show:false},
               type: "datetime",
-              categories: data?.map(price=> price.time_close)
+              categories: data?.map((price) => price.time_close),
+              labels: {
+                style: {
+                  colors: '#9c88ff'
+                }
+              }
             },
-            fill:{type:"gradient", gradient:{gradientToColors:["blue"], stops: [0,100]}},
-            colors: ["red"],
             tooltip: {
               y: {
-                formatter: (value) => `${value.toFixed(3)}`
+                formatter: (value) => `${value.toFixed(3)}`,
+              },
+            },
+            plotOptions: {
+              candlestick: {
+                wick: {
+                  useFillColor: true,
+                },
+                colors: {
+                  upward: '#3C90EB',
+                  downward: '#DF7D46'
+                }
               }
             }
           }}

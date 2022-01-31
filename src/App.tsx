@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
-import { ReactQueryDevtools } from 'react-query/devtools';
-
-
-
+import { ReactQueryDevtools } from "react-query/devtools";
+import { ThemeProvider } from "styled-components";
+import { darkTheme, lightTheme } from "./theme";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCloudMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;500&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
@@ -64,12 +69,42 @@ a {
 }
 `;
 
+const ToggleBtn = styled.button`
+  border:none;
+  background-color: transparent;
+  font-size: 30px;
+  position: absolute;
+  top:10px;
+  right:20px;
+  cursor: pointer;
+`;
+const Container = styled.div`
+  width: 480px;
+  margin: 0 auto;
+  position: relative;
+`;
+
 function App() {
+  const [theme, setTheme] = useState("dark");
+  const themeToggler = () => {
+    theme === "dark" ? setTheme("light") : setTheme("dark");
+  };
+
   return (
     <>
-      <GlobalStyle />
-      <Router />
-	  <ReactQueryDevtools initialIsOpen={true}/>
+      <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Container>
+        <ToggleBtn onClick={themeToggler}>
+          {theme === "dark" ? (
+            <FontAwesomeIcon icon={faSun} style={{color: "#f5f6fa"}} />
+          ) : (
+            <FontAwesomeIcon icon={faCloudMoon} style={{color: "#9c88ff"}} />
+          )}
+        </ToggleBtn>
+        </Container>
+        <Router />
+      </ThemeProvider>
     </>
   );
 }

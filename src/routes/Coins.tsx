@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -29,10 +30,11 @@ const Loader = styled.span`
   text-align: center;
 `;
 
+
 const CoinsList = styled.ul``;
 const Coin = styled.li`
   background-color: white;
-  color: ${(props) => props.theme.bgColor};
+  color: #2f3640;
   margin-bottom: 10px;
   padding: 20px;
   border-radius: 20px;
@@ -44,7 +46,7 @@ const Coin = styled.li`
   &:hover {
     background-color: ${(props) => props.theme.accentColor};
     a {
-      color: ${(props) => props.theme.textColor};
+      color: white;
     }
   }
 `;
@@ -66,19 +68,14 @@ interface ICoin {
 }
 
 function Coins() {
-  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins)
-  // const [coins, setCoins] = useState<CoinInterface[]>([]);
-  // const [loading, setLoading] = useState(true);
-  // useEffect(() => {
-  //   (async () => {
-  //     const response = await fetch("https://api.coinpaprika.com/v1/coins");
-  //     const json = await response.json();
-  //     setCoins(json.slice(0, 100));
-  //     setLoading(false);
-  //   })();
-  // }, []);
+  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
   return (
     <Container>
+      <Helmet>
+        <title>
+         Coins
+        </title>
+      </Helmet>
       <Header>
         <Title>COINS</Title>
       </Header>
@@ -86,12 +83,12 @@ function Coins() {
         <Loader>Loading...</Loader>
       ) : (
         <CoinsList>
-          {data?.slice(0,100).map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <Coin key={coin.id}>
               <Link
                 to={{
                   pathname: `/${coin.id}`,
-                  state: {name: coin.name},
+                  state: { name: coin.name },
                 }}
               >
                 <Img
