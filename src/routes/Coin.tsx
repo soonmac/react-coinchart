@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams, useRouteMatch } from "react-router-dom";
-import { Switch, Route, useHistory } from "react-router";
+import { Switch, Route} from "react-router";
 import styled from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
@@ -67,6 +67,8 @@ interface PriceData {
     };
   };
 }
+
+
 
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};

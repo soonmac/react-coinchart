@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -9,7 +8,10 @@ import {
   faCloudMoon,
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
+
 import styled from "styled-components";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { isDarkAtom } from "./atoms";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;500&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
@@ -69,6 +71,12 @@ a {
 }
 `;
 
+
+const Container = styled.div`
+  width: 480px;
+  margin: 0 auto;
+  position: relative;
+`;
 const ToggleBtn = styled.button`
   border:none;
   background-color: transparent;
@@ -78,25 +86,18 @@ const ToggleBtn = styled.button`
   right:20px;
   cursor: pointer;
 `;
-const Container = styled.div`
-  width: 480px;
-  margin: 0 auto;
-  position: relative;
-`;
 
 function App() {
-  const [theme, setTheme] = useState("dark");
-  const themeToggler = () => {
-    theme === "dark" ? setTheme("light") : setTheme("dark");
-  };
-
+  const isDark = useRecoilValue(isDarkAtom);
+  const setIsDark = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom= ()=>setIsDark(prev=>!prev);
   return (
     <>
-      <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
         <GlobalStyle />
         <Container>
-        <ToggleBtn onClick={themeToggler}>
-          {theme === "dark" ? (
+        <ToggleBtn onClick={toggleDarkAtom}>
+          {isDark ? (
             <FontAwesomeIcon icon={faSun} style={{color: "#f5f6fa"}} />
           ) : (
             <FontAwesomeIcon icon={faCloudMoon} style={{color: "#9c88ff"}} />
@@ -105,6 +106,7 @@ function App() {
         </Container>
         <Router />
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={true} />
     </>
   );
 }

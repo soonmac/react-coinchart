@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
+
+
 
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
@@ -67,6 +68,8 @@ interface ICoin {
   type: string;
 }
 
+
+
 function Coins() {
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
   return (
@@ -78,6 +81,7 @@ function Coins() {
       </Helmet>
       <Header>
         <Title>COINS</Title>
+
       </Header>
       {isLoading ? (
         <Loader>Loading...</Loader>
